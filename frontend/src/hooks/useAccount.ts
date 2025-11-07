@@ -1,7 +1,7 @@
 // hooks/useAccount.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
-import { Account, BasicAccount } from '@/types/account'
+import { Account, BasicAccount, TransferData, TransferResponse } from '@/types/account'
 
 const API_BASE_URL = 'http://localhost:3000/api'
 
@@ -53,6 +53,24 @@ export const useDeleteAccount = () => {
   return useMutation<void, Error, string>({
     mutationFn: async (id: string) => {
       await axios.delete(`${API_BASE_URL}/accounts/${id}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+    },
+  })
+}
+
+// Transfer funds between accounts
+export const useTransferAccount = () => {
+  const queryClient = useQueryClient()
+  
+  return useMutation<TransferResponse, Error, TransferData>({  
+    mutationFn: async (transferData: TransferData) => {
+      const { data } = await axios.post<TransferResponse>(  
+        `${API_BASE_URL}/accounts/transfer`, 
+        transferData
+      )
+      return data 
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })

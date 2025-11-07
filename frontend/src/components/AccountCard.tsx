@@ -46,6 +46,7 @@ import { ChevronDown, Plus, Pencil, Trash2 } from "lucide-react"
 import { useAccounts, useAddAccount, useUpdateAccount, useDeleteAccount } from "@/hooks/useAccount"
 import { BasicAccount, Account, AccountType, accountTypeMap } from "@/types/account"
 import { toast } from "sonner" 
+import TransferDialog from "./TransferDialog"
 
 // Form data type
 type FormData = {
@@ -214,6 +215,12 @@ export default function AccountCard() {
                     {account.balance.toLocaleString()}
                 </span>
                 <div className="flex items-center gap-1">
+                    {/* TRANSFER BUTTON */}
+                    <TransferDialog 
+                        fromAccount={account} 
+                        accounts={accounts} 
+                    />
+                    {/* EDIT BUTTON */}
                     <Button
                         variant="ghost"
                         size="icon"
@@ -222,6 +229,7 @@ export default function AccountCard() {
                     >
                         <Pencil className="h-4 w-4" />
                     </Button>
+                    {/* DELETE BUTTON */}
                     <Button
                         variant="ghost"
                         size="icon"

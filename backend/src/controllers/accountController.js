@@ -64,3 +64,56 @@ export const deleteAccount = async(req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+export const transferBetweenAccounts = async(req, res) => {
+    try {
+        const { fromAccountId, toAccountId, amount, note } = req.body;
+
+        // Validate
+        if (!fromAccountId || !toAccountId || !amount) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        if (amount <= 0) {
+            return res.status(400).json({ message: 'Amount must be greater than 0' });
+        }
+
+        // Get accounts
+        const fromAccount = await Account.findById(fromAccountId);
+        const toAccount = await Account.findById(toAccountId);
+
+        if (!fromAccount || !toAccount) {
+            return res.status(404).json({ message: 'Account not found' });
+        }
+
+        // Check balance
+        if (fromAccount.balance < amount) {
+            return res.status(400).json({ message: 'Insufficient balance' });
+        }
+
+        // Perform transfer
+        fromAccount.balance -= amount;
+        toAccount.balance += amount;
+
+        await fromAccount.save();
+        await toAccount.save();
+
+        // TODO: Record transaction history
+        // await Transaction.create({
+        //     type: 'transfer',
+        //     fromAccount: fromAccountId,
+        //     toAccount: toAccountId,
+        //     amount,
+        //     note
+        // });
+
+        return res.json({ 
+            success: true,
+            message: 'Transfer successful',
+            fromAccount,
+            toAccount
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
