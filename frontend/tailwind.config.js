@@ -14,7 +14,13 @@ export default {
   		},
   		colors: {
   			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
+			foreground: 'hsl(var(--foreground))',
+			success: 'hsl(var(--success))',
+			'success-foreground': 'hsl(var(--success-foreground))',
+			warning: 'hsl(var(--warning))',
+			'warning-foreground': 'hsl(var(--warning-foreground))',
+			info: 'hsl(var(--info))',
+			'info-foreground': 'hsl(var(--info-foreground))',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'

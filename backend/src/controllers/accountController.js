@@ -29,7 +29,7 @@ export const createAccount = async(req, res) => {
     try{
         const newAccount = new Account({name, accountType, balance, currency, note});
         const savedAccount = await newAccount.save();
-        res.status(201).json(savedAccount);
+        res.status(201).json({success:true, data:savedAccount});
     }catch(error){
         console.error("Error creating account:", error);
         res.status(500).json({ message: error.message });
