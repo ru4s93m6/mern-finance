@@ -12,6 +12,8 @@ router.route('/')
 
 router.route('/stats/:year/:month').get(protect, getMonthlyStats);
 
+router.route('/month/:year/:month').get(protect, getTransactionsByMonth);
+
 router.route('/:id')
     .delete(protect, deleteTransaction)
     .put(protect, updateTransaction);

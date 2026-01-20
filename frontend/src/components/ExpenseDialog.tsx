@@ -33,6 +33,24 @@ interface ExpenseDialogProps {
     editingTransaction?: any; // To be typed properly later
 }
 
+
+interface ApiError {
+    response?: {
+        data?: {
+            message?: string;
+        }
+    }
+}
+
+interface TransactionData {
+    type: string;
+    amount: number;
+    category: string;
+    sourceAccount: string | null;
+    note: string;
+    date: Date;
+}
+
 export default function ExpenseDialog({ open, onOpenChange, editingTransaction }: ExpenseDialogProps) {
     const { data: accounts } = useAccounts();
     const queryClient = useQueryClient();
@@ -42,6 +60,15 @@ export default function ExpenseDialog({ open, onOpenChange, editingTransaction }
     const [sourceAccountId, setSourceAccountId] = useState<string>('cash'); // 'cash' or accountId
     const [note, setNote] = useState('');
     const [date, setDate] = useState<Date>(new Date());
+
+    // Reset form helper
+    const resetForm = () => {
+        setAmount('');
+        setCategory('');
+        setSourceAccountId('cash');
+        setNote('');
+        setDate(new Date());
+    };
 
     // Populate Form for Editing
     useEffect(() => {
@@ -57,7 +84,7 @@ export default function ExpenseDialog({ open, onOpenChange, editingTransaction }
     }, [open, editingTransaction]);
 
     const createTransactionMutation = useMutation({
-        mutationFn: async (newTransaction: any) => {
+        mutationFn: async (newTransaction: TransactionData) => {
             const { data } = await api.post('/transactions', newTransaction);
             return data;
         },
@@ -69,13 +96,13 @@ export default function ExpenseDialog({ open, onOpenChange, editingTransaction }
             onOpenChange(false);
             resetForm();
         },
-        onError: (error: any) => {
+        onError: (error: ApiError) => {
             toast.error(error.response?.data?.message || '記帳失敗');
         },
     });
 
     const updateTransactionMutation = useMutation({
-        mutationFn: async (updatedData: any) => {
+        mutationFn: async (updatedData: TransactionData) => {
             const { data } = await api.put(`/transactions/${editingTransaction._id}`, updatedData);
             return data;
         },
@@ -87,18 +114,10 @@ export default function ExpenseDialog({ open, onOpenChange, editingTransaction }
             onOpenChange(false);
             resetForm();
         },
-        onError: (error: any) => {
+        onError: (error: ApiError) => {
             toast.error(error.response?.data?.message || '更新失敗');
         },
     });
-
-    const resetForm = () => {
-        setAmount('');
-        setCategory('');
-        setSourceAccountId('cash');
-        setNote('');
-        setDate(new Date());
-    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
