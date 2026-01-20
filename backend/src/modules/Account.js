@@ -1,31 +1,36 @@
 import mongoose from "mongoose";
 
 const AccountSchema = new mongoose.Schema({
-    name:{
+    name: {
         type: String,
         required: true
     },
-    accountType:{
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    accountType: {
         type: String,
         required: true,
         // enum:[] // Later we can add some values to limit the account type 
     },
-    balance:{
+    balance: {
         type: Number,
         required: true,
-         default: 0 
+        default: 0
     },
-    currency:{
+    currency: {
         type: String,
         required: false,
         default: 'TWD'
     },
-    note:{
+    note: {
         type: String,
         required: false,
-        default:''
+        default: ''
     }
-}, {timestamps: true})
+}, { timestamps: true })
 
 const Account = mongoose.model('Account', AccountSchema);
 

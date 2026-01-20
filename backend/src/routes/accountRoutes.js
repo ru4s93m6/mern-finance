@@ -1,7 +1,11 @@
 import express from 'express';
 import { getAccounts, getAccountById, createAccount, updateAccount, deleteAccount, transferBetweenAccounts } from '../controllers/accountController.js';
 
+import { protect } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
+
+router.use(protect);
 
 router.get('/', getAccounts)
 router.get('/:id', getAccountById)
